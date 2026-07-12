@@ -1,37 +1,67 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# ==============================================================================
+# Configuraciones del IDE (IntelliJ IDEA)
+# ==============================================================================
+.idea/
 *.iml
 *.ipr
+*.iws
+.shelf/
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# ==============================================================================
+# Archivos del sistema y carpetas temporales
+# ==============================================================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.tmp
+*~
+*.bak
+.load-history
 
-### VS Code ###
-.vscode/
+# ==============================================================================
+# Herramientas de compilación y dependencias (Maven / Gradle)
+# ==============================================================================
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ==============================================================================
+# Archivos compilados, clases y librerías
+# ==============================================================================
+*.class
+*.log
+*.zip
+*.tar.gz
+*.jar
+*.war
+*.nar
+*.ear
+
+# ==============================================================================
+# Archivos de Spring Boot, variables de entorno y Secrets
+# ==============================================================================
+.env
+*.properties.local
+*.yml.local
+.sts4-cache/
+.springBeans
+
+# ==============================================================================
+# Herramientas de Base de Datos integradas de IntelliJ
+# ==============================================================================
+.datagrip/
