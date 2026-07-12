@@ -4,6 +4,7 @@ package com.biblioteca.api_sistema_biblioteca.controller;
 import com.biblioteca.api_sistema_biblioteca.dto.CreateBookRequest;
 import com.biblioteca.api_sistema_biblioteca.model.Book;
 import com.biblioteca.api_sistema_biblioteca.service.BookService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,4 +33,17 @@ public class BookController {
         return bookService.addBook(request);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        // Tu lógica para borrar de la base de datos usando el repositorio:
+        bookService.deleteById(id);
+        return ResponseEntity.noContent().build(); // Retorna un estado 204 sin contenido (éxito)
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody CreateBookRequest request) {
+        // Llamamos al servicio para actualizar y retornamos el libro modificado
+        Book updatedBook = bookService.updateBook(id, request);
+        return ResponseEntity.ok(updatedBook);
+    }
 }

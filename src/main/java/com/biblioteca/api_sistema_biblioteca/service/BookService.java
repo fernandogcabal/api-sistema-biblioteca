@@ -47,4 +47,30 @@ public class BookService {
         // 3. Guardamos la entidad real en la base de datos
         return bookRepository.save(bookEntity);
     }
+
+    public void deleteById(Long id){
+        bookRepository.deleteById(id);
+    }
+
+    public Book updateBook(Long id, CreateBookRequest request) {
+        // 1. Buscamos el libro existente en la BD
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Error: El libro con ID " + id + " no existe."));
+
+        // 2. Buscamos al usuario dueño por si cambió (o mantenemos el mismo)
+        User owner = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("Error: Usuario no encontrado."));
+
+        // 3. Actualizamos los campos de la entidad
+        existingBook.setTitle(request.getTitle());
+        existingBook.setAuthor(request.getAuthor());
+        existingBook.setIsbn(request.getIsbn());
+        existingBook.setReadingStatus(request.getReadingStatus());
+        existingBook.setFormat(request.getFormat());
+        existingBook.setAvailable(request.isAvailable());
+        existingBook.setUser(owner);
+
+        // 4. Guardamos los cambios
+        return bookRepository.save(existingBook);
+    }
 }
