@@ -20,7 +20,7 @@ class JwtServiceTest {
 
     @BeforeEach
     void setUp() {
-        jwtService = new JwtService();
+        jwtService = new JwtService("test-secret-key-min-32-characters-long", 86400000);
         testUsername = "testuser";
     }
 
