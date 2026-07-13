@@ -6,8 +6,9 @@ import com.biblioteca.api_sistema_biblioteca.model.Book;
 import com.biblioteca.api_sistema_biblioteca.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RestController                    // Le dice a Spring que esta clase expondrá endpoints HTTP
 @RequestMapping("/api/books")      // Define la URL base para todos los métodos de esta clase
@@ -21,8 +22,13 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public Page<Book> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        // Creamos el objeto de paginación que entiende Spring Data
+        Pageable pageable = PageRequest.of(page, size);
+        return bookService.getAllBooks(pageable);
     }
 
     @PostMapping // Le dice a Spring que intercepte las peticiones HTTP POST a /api/books

@@ -6,6 +6,8 @@ import com.biblioteca.api_sistema_biblioteca.model.Book;
 import com.biblioteca.api_sistema_biblioteca.model.User;
 import com.biblioteca.api_sistema_biblioteca.repository.BookRepository;
 import com.biblioteca.api_sistema_biblioteca.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +24,9 @@ public class BookService {
         this.userRepository = userRepository;
     }
 
-    public List<Book> getAllBooks() {
-        // Aquí irían tus reglas de negocio en el futuro (Ej: validar permisos)
-        return bookRepository.findAll();
+    // 💡 Cambiado de List<Book> a Page<Book> y ahora recibe el parámetro pageable
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     public Book addBook(CreateBookRequest request) {
