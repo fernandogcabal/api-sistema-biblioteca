@@ -5,6 +5,7 @@ import com.biblioteca.api_sistema_biblioteca.dto.LoginRequest;
 import com.biblioteca.api_sistema_biblioteca.dto.UserRegisterRequest;
 import com.biblioteca.api_sistema_biblioteca.model.User;
 import com.biblioteca.api_sistema_biblioteca.repository.UserRepository;
+import com.biblioteca.api_sistema_biblioteca.util.ValidationUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,11 @@ public class UserService {
     }
 
     public User registerUser(UserRegisterRequest request) {
+        // Validate inputs
+        ValidationUtil.validateUsername(request.getUsername());
+        ValidationUtil.validateEmail(request.getEmail());
+        ValidationUtil.validatePassword(request.getPassword());
+
         // 1. Convertimos el char[] de forma segura a bytes para que BCrypt lo procese
         byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
 
@@ -49,7 +55,7 @@ public class UserService {
     public AuthResponse loginUser(LoginRequest request) {
         // 1. Buscar al usuario por username
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
         // 2. Convertir temporalmente el char[] a bytes para la comparación de BCrypt
         byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
@@ -64,7 +70,7 @@ public class UserService {
 
         // 5. Si no coincide, lanzamos excepción
         if (!matches) {
-            throw new RuntimeException("Credenciales inválidas");
+            throw new RuntimeException("Invalid credentials");
         }
 
         // Generamos su token y lo retornamos en el DTO
@@ -78,7 +84,7 @@ public class UserService {
      */
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el username: " + username));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     /**
@@ -88,14 +94,19 @@ public class UserService {
     public User updateUser(String currentUsername, UserRegisterRequest request) {
         // 1. Buscar el usuario existente en la base de datos
         User existingUser = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 2. Actualizar los campos básicos
+        // 2. Actualizar los campos básicos con validation
+        ValidationUtil.validateUsername(request.getUsername());
+        ValidationUtil.validateEmail(request.getEmail());
+        
         existingUser.setUsername(request.getUsername());
         existingUser.setEmail(request.getEmail());
 
         // 3. Si se envía una nueva contraseña, la encriptamos de forma segura
         if (request.getPassword() != null && request.getPassword().length > 0 && request.getPassword()[0] != '0') {
+            ValidationUtil.validatePassword(request.getPassword());
+            
             byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
             String encryptedPassword = passwordEncoder.encode(new String(passwordBytes, StandardCharsets.UTF_8));
             existingUser.setPasswordHash(encryptedPassword);

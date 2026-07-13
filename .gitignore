@@ -56,10 +56,22 @@ build/
 # Archivos de Spring Boot, variables de entorno y Secrets
 # ==============================================================================
 .env
+.env.local
+.env.*.local
+.env.example
 *.properties.local
 *.yml.local
 .sts4-cache/
 .springBeans
+
+# ==============================================================================
+# Archivos de seguridad (No hacer commit)
+# ==============================================================================
+SECURITY.md
+application-prod.properties
+keystore.p12
+*.keystore
+*.jks
 
 # ==============================================================================
 # Herramientas de Base de Datos integradas de IntelliJ

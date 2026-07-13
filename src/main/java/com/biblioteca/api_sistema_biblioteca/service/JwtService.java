@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -15,31 +16,36 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Generamos una clave segura de manera dinámica para desarrollo.
-    // (En producción esta clave debería venir de tus variables de entorno).
-    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final SecretKey secretKey;
+    private final long expirationTime;
 
-    // El token expirará en 24 horas
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+    public JwtService(@Value("${jwt.secret:}") String secret, 
+                      @Value("${jwt.expiration:86400000}") long expirationTime) {
+        if (secret == null || secret.isEmpty()) {
+            secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        } else if (secret.length() >= 32) {
+            secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        } else {
+            throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
+        }
+        this.expirationTime = expirationTime;
+    }
 
-    // Generar un token basado en el username del usuario
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SECRET_KEY)
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(secretKey)
                 .compact();
     }
 
-    // Extraer el username del token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Verificar si el token ha expirado
     public boolean isTokenValid(String token, String username) {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
@@ -56,7 +62,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(SECRET_KEY)
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
