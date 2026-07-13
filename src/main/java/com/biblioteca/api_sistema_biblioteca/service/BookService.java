@@ -37,8 +37,8 @@ public class BookService {
                 .title(request.getTitle())
                 .author(request.getAuthor())
                 .isbn(request.getIsbn())
-                .readingStatus(ReadingStatus.valueOf(request.getReadingStatus())) // Converte String -> Enum
-                .format(BookFormat.valueOf(request.getFormat()))                 // Converte String -> Enum
+                .readingStatus(ReadingStatus.valueOf(request.getReadingStatus()))
+                .format(BookFormat.valueOf(request.getFormat()))
                 .available(request.isAvailable())
                 .user(owner)
                 .build();
@@ -57,7 +57,6 @@ public class BookService {
         User owner = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("Error: Usuario no encontrado."));
 
-        // 💡 Corregido usando .valueOf() para la actualización de campos
         existingBook.setTitle(request.getTitle());
         existingBook.setAuthor(request.getAuthor());
         existingBook.setIsbn(request.getIsbn());

@@ -32,7 +32,6 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(Principal principal) {
-        // 'Principal' es una interfaz de Spring Security que contiene el username extraído del JWT
         String username = principal.getName();
         User user = userService.findByUsername(username);
         return ResponseEntity.ok(user);
