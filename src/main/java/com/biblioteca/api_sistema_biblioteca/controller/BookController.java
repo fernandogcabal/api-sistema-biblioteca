@@ -4,6 +4,7 @@ package com.biblioteca.api_sistema_biblioteca.controller;
 import com.biblioteca.api_sistema_biblioteca.dto.CreateBookRequest;
 import com.biblioteca.api_sistema_biblioteca.model.Book;
 import com.biblioteca.api_sistema_biblioteca.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class BookController {
     }
 
     @PostMapping // Le dice a Spring que intercepte las peticiones HTTP POST a /api/books
-    public Book createBook(@RequestBody CreateBookRequest request) {
+    public Book createBook(@Valid @RequestBody CreateBookRequest request) {
         // @RequestBody le indica a Spring que tome el JSON que viene de Postman
         // y lo transforme automáticamente en un objeto de tipo Book
 
@@ -47,7 +48,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody CreateBookRequest request) {
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @Valid @RequestBody CreateBookRequest request) {
         // Llamamos al servicio para actualizar y retornamos el libro modificado
         Book updatedBook = bookService.updateBook(id, request);
         return ResponseEntity.ok(updatedBook);
