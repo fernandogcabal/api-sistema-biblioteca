@@ -37,6 +37,7 @@ dependencies {
 
     // El motor completo de seguridad de Spring
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Librería estándar de la industria para generar y leer Tokens JWT
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
