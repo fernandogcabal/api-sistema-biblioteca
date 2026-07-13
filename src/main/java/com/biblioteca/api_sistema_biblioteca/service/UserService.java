@@ -14,10 +14,9 @@ import java.util.Arrays;
 
 @Service
 public class UserService {
-    // ... Inyección en el constructor ...
+
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    // Instanciamos el codificador oficial de BCrypt
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserService(UserRepository userRepository, JwtService jwtService) {
@@ -26,7 +25,7 @@ public class UserService {
     }
 
     public User registerUser(UserRegisterRequest request) {
-// 1. Convertimos el char[] de forma segura a bytes para que BCrypt lo procese
+        // 1. Convertimos el char[] de forma segura a bytes para que BCrypt lo procese
         byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
 
         // 2. Encriptamos con BCrypt (Genera un hash irreversible de 60 caracteres)
@@ -50,7 +49,7 @@ public class UserService {
     public AuthResponse loginUser(LoginRequest request) {
         // 1. Buscar al usuario por username
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Credenciales inválidas")); // Por seguridad, no decimos si lo que falló fue el usuario o la contraseña
+                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
 
         // 2. Convertir temporalmente el char[] a bytes para la comparación de BCrypt
         byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
@@ -68,9 +67,45 @@ public class UserService {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        // En lugar de retornar 'user', generamos su token y lo retornamos en el DTO
+        // Generamos su token y lo retornamos en el DTO
         String token = jwtService.generateToken(user.getUsername());
         return new AuthResponse(token);
     }
 
+    /**
+     * Busca un usuario por su nombre de usuario.
+     * Requerido por el endpoint GET /api/users/me
+     */
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el username: " + username));
+    }
+
+    /**
+     * Actualiza la información del perfil del usuario logueado.
+     * Requerido por el endpoint PUT /api/users/me
+     */
+    public User updateUser(String currentUsername, UserRegisterRequest request) {
+        // 1. Buscar el usuario existente en la base de datos
+        User existingUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Actualizar los campos básicos
+        existingUser.setUsername(request.getUsername());
+        existingUser.setEmail(request.getEmail());
+
+        // 3. Si se envía una nueva contraseña, la encriptamos de forma segura
+        if (request.getPassword() != null && request.getPassword().length > 0 && request.getPassword()[0] != '0') {
+            byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
+            String encryptedPassword = passwordEncoder.encode(new String(passwordBytes, StandardCharsets.UTF_8));
+            existingUser.setPasswordHash(encryptedPassword);
+
+            // Limpieza higiénica de memoria de contraseñas
+            Arrays.fill(passwordBytes, (byte) 0);
+            Arrays.fill(request.getPassword(), '0');
+        }
+
+        // 4. Guardar los cambios en PostgreSQL
+        return userRepository.save(existingUser);
+    }
 }
