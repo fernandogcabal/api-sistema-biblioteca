@@ -26,54 +26,42 @@ public class UserService {
     }
 
     public User registerUser(UserRegisterRequest request) {
-        // Validate inputs
         ValidationUtil.validateUsername(request.getUsername());
         ValidationUtil.validateEmail(request.getEmail());
         ValidationUtil.validatePassword(request.getPassword());
 
-        // 1. Convertimos el char[] de forma segura a bytes para que BCrypt lo procese
         byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
 
-        // 2. Encriptamos con BCrypt (Genera un hash irreversible de 60 caracteres)
         String realPasswordHash = passwordEncoder.encode(new String(passwordBytes, StandardCharsets.UTF_8));
 
-        // 3. Construimos la entidad con el Hash real e irreversible
         User userEntity = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .passwordHash(realPasswordHash)
                 .build();
 
-        // 4. ¡SEGURIDAD ABSOLUTA!: Destruimos tanto los bytes temporales como el char[] original
         Arrays.fill(passwordBytes, (byte) 0);
         Arrays.fill(request.getPassword(), '0');
 
-        // 5. Guardamos en PostgreSQL
         return userRepository.save(userEntity);
     }
 
     public AuthResponse loginUser(LoginRequest request) {
-        // 1. Buscar al usuario por username
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
-        // 2. Convertir temporalmente el char[] a bytes para la comparación de BCrypt
         byte[] passwordBytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(request.getPassword())).array();
         String rawPassword = new String(passwordBytes, StandardCharsets.UTF_8);
 
-        // 3. BCrypt compara el texto plano contra el Hash guardado
         boolean matches = passwordEncoder.matches(rawPassword, user.getPasswordHash());
 
-        // 4. ¡SEGURIDAD ABSOLUTA!: Limpiamos los arreglos inmediatamente
         Arrays.fill(passwordBytes, (byte) 0);
         Arrays.fill(request.getPassword(), '0');
 
-        // 5. Si no coincide, lanzamos excepción
         if (!matches) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        // Generamos su token y lo retornamos en el DTO
         String token = jwtService.generateToken(user.getUsername());
         return new AuthResponse(token);
     }
@@ -96,14 +84,12 @@ public class UserService {
         User existingUser = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 2. Actualizar los campos básicos con validation
         ValidationUtil.validateUsername(request.getUsername());
         ValidationUtil.validateEmail(request.getEmail());
         
         existingUser.setUsername(request.getUsername());
         existingUser.setEmail(request.getEmail());
 
-        // 3. Si se envía una nueva contraseña, la encriptamos de forma segura
         if (request.getPassword() != null && request.getPassword().length > 0 && request.getPassword()[0] != '0') {
             ValidationUtil.validatePassword(request.getPassword());
             
@@ -111,12 +97,10 @@ public class UserService {
             String encryptedPassword = passwordEncoder.encode(new String(passwordBytes, StandardCharsets.UTF_8));
             existingUser.setPasswordHash(encryptedPassword);
 
-            // Limpieza higiénica de memoria de contraseñas
             Arrays.fill(passwordBytes, (byte) 0);
             Arrays.fill(request.getPassword(), '0');
         }
 
-        // 4. Guardar los cambios en PostgreSQL
         return userRepository.save(existingUser);
     }
 }
