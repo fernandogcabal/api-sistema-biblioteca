@@ -6,7 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,5 +45,36 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage()); // Captura el texto de tus .orElseThrow(...)
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodValidationExceptions(HandlerMethodValidationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getValueResults().forEach(result -> {
+            // Obtenemos el nombre del parámetro de forma segura
+            String parameterName = result.getMethodParameter().getParameterName();
+            if (parameterName == null) {
+                parameterName = result.getMethodParameter().getParameter().getName();
+            }
+
+            // Si por alguna razón sigue siendo genérico (ej. arg1), usamos el tipo de dato como guía
+            if (parameterName.startsWith("arg")) {
+                parameterName = result.getMethodParameter().getParameter().getType().getSimpleName().toLowerCase();
+            }
+
+            String finalParameterName = parameterName;
+            result.getResolvableErrors().forEach(error -> {
+                errors.put(finalParameterName, error.getDefaultMessage());
+            });
+        });
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("error", "Validación de Parámetros Fallida");
+        response.put("messages", errors);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

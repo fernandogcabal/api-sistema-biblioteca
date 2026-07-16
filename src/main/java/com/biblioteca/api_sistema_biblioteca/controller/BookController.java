@@ -4,6 +4,8 @@ import com.biblioteca.api_sistema_biblioteca.dto.CreateBookRequest;
 import com.biblioteca.api_sistema_biblioteca.model.Book;
 import com.biblioteca.api_sistema_biblioteca.service.BookService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,8 @@ public class BookController {
     @GetMapping
     public ResponseEntity<Page<Book>> getAllBooks(
             @RequestParam(required = false) String title, // 💡 Nuevo parámetro opcional
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "5") @Min(1) @Max(100) int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Book> books = bookService.getAllBooks(title, pageable);
