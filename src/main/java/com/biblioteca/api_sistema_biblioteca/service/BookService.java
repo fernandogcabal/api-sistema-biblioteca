@@ -24,7 +24,12 @@ public class BookService {
         this.userRepository = userRepository;
     }
 
-    public Page<Book> getAllBooks(Pageable pageable) {
+    // 💡 Modificamos el mét0do para que reciba un parámetro opcional 'title'
+    public Page<Book> getAllBooks(String title, Pageable pageable) {
+        String normalizedTitle = title == null ? null : title.trim();
+        if (normalizedTitle != null && !normalizedTitle.trim().isEmpty()) {
+            return bookRepository.findByTitleContainingIgnoreCase(normalizedTitle, pageable);
+        }
         return bookRepository.findAll(pageable);
     }
 
