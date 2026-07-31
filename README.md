@@ -1,6 +1,6 @@
 # 📚 API Sistema Biblioteca
 
-A robust, production-ready RESTful API developed with **Java 17** and **Spring Boot 3**, serving as the backend core for the Library Management System.
+A robust, production-ready RESTful API developed with **Java 21** and **Spring Boot 4.1.0**, serving as the backend core for the Library Management System.
 
 The application implements JWT-based authentication, database persistence with PostgreSQL and Spring Data JPA, comprehensive input validation with custom exception handlers, and pagination for high-performance resource querying.
 
@@ -8,11 +8,11 @@ The application implements JWT-based authentication, database persistence with P
 
 ## 🛠️ Tech Stack & Architecture
 
-* **Language & Framework:** Java 17, Spring Boot 3
+* **Language & Framework:** Java 21, Spring Boot 4.1.0
 * **Database & Persistence:** PostgreSQL, Spring Data JPA / Hibernate
 * **Security:** Spring Security & JWT (JSON Web Tokens)
 * **Validation & Error Handling:** Jakarta Bean Validation & Centralized `@RestControllerAdvice`
-* **Build Tool:** Maven
+* **Build Tool:** Gradle
 * **Testing:** JUnit 5, Mockito
 
 ### 📂 Project Structure
@@ -57,8 +57,8 @@ src/main/java/com/biblioteca/api_sistema_biblioteca/
 ## 🚀 Getting Started Locally
 
 ### Prerequisites
-* **Java Development Kit (JDK)**: `17` or higher
-* **Maven**: `3.8+`
+* **Java Development Kit (JDK)**: `21` or higher
+* **Gradle**: Gradle Wrapper included (`./gradlew`)
 * **PostgreSQL Database**: Running instance on port `5432`
 
 ### Database Configuration
@@ -66,13 +66,13 @@ src/main/java/com/biblioteca/api_sistema_biblioteca/
 Ensure PostgreSQL is running, then create the database:
 
 ```sql
-CREATE DATABASE sistema_biblioteca;
+CREATE DATABASE bibliotecadb;
 ```
 
 Configure your environment variables or update `src/main/resources/application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/sistema_biblioteca
+spring.datasource.url=jdbc:postgresql://localhost:5432/sistema_bibliotecadb
 spring.datasource.username=YOUR_POSTGRES_USER
 spring.datasource.password=YOUR_POSTGRES_PASSWORD
 
@@ -93,12 +93,12 @@ jwt.secret=YOUR_SUPER_SECRET_KEY_AT_LEAST_256_BITS_LONG
 
 2. **Build the project:**
    ```bash
-   mvn clean install
+   ./gradlew build
    ```
 
 3. **Run the application:**
    ```bash
-   mvn spring-boot:run
+   ./gradlew bootRun
    ```
 
 The API will start at `http://localhost:8080`.
@@ -110,7 +110,7 @@ The API will start at `http://localhost:8080`.
 To execute unit and integration tests:
 
 ```bash
-mvn test
+./gradlew test
 ```
 
 ---
