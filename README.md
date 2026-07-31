@@ -23,6 +23,7 @@ The project adheres to a clean layered architecture separating API controllers, 
 src/main/java/com/biblioteca/api_sistema_biblioteca/
 ├── config/                  # Global configurations & exception handlers
 │   └── GlobalExceptionHandler.java
+│   └── SecurityConfig.java
 ├── controller/              # REST Endpoints (Controllers)
 │   ├── AuthController.java
 │   ├── BookController.java
@@ -33,7 +34,7 @@ src/main/java/com/biblioteca/api_sistema_biblioteca/
 ├── dto/                     # Request & Response Data Transfer Objects
 ├── repository/              # Spring Data JPA Repositories
 ├── service/                 # Business Logic & Service Interfaces
-└── security/                # JWT Utilities, Filters, & Security Configs
+└── security/                # JWT Utilities & Filters
 ```
 
 ---
