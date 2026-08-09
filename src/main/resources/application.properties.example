@@ -1,0 +1,17 @@
+# Example development config - keep secrets out of the repo
+# Copy this to src/main/resources/application.properties for local dev
+
+spring.application.name=api-sistema-biblioteca
+
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bibliotecadb}
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Dev JPA settings
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# NOTES:
+# - Set DB_USERNAME/DB_PASSWORD in your environment or in a local .env (ignored).
+# - For production, keep using environment variables or a secret manager.

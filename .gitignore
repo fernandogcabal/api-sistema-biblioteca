@@ -77,3 +77,4 @@ keystore.p12
 # Herramientas de Base de Datos integradas de IntelliJ
 # ==============================================================================
 .datagrip/
+src/main/resources/application.properties
