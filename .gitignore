@@ -58,7 +58,6 @@ build/
 .env
 .env.local
 .env.*.local
-.env.example
 *.properties.local
 *.yml.local
 .sts4-cache/
@@ -77,3 +76,6 @@ keystore.p12
 # Herramientas de Base de Datos integradas de IntelliJ
 # ==============================================================================
 .datagrip/
+src/main/resources/application.properties
+*.p12
+database.sql.example

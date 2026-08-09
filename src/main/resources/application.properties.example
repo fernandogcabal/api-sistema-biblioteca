@@ -1,0 +1,35 @@
+# Example development config - DO NOT commit secrets
+# IMPORTANT INSTRUCTIONS FOR DEVELOPERS:
+# 1) Create a local top-level .env file on each machine (project root). DO NOT commit it.
+#    Example entries (in project/.env):
+#      POSTGRES_HOST=localhost
+#      POSTGRES_PORT=5432
+#      POSTGRES_DB=bibliotecadb
+#      POSTGRES_USER=postgres
+#      POSTGRES_PASSWORD=your_secure_password_here
+#      JWT_SECRET=replace_with_32+_char_secret
+#      SSL_KEYSTORE_PATH=/path/to/keystore.p12
+#      SSL_KEYSTORE_PASSWORD=keystore_password
+# 2) Add ".env" to .gitignore (repo already ignores it). Never commit real values.
+# 3) Load env vars before running (use direnv, export in shell, or docker-compose env_file).
+# 4) To run locally you may copy this file to src/main/resources/application.properties (kept ignored):
+#      cp src/main/resources/application.properties.example src/main/resources/application.properties
+#    Then run the app; it will read values from environment variables shown below.
+# 5) For production, use a secrets manager or CI/CD secret variables. Rotate leaked credentials immediately.
+
+spring.application.name=api-sistema-biblioteca
+
+# Database configuration - read values from environment
+# Uses POSTGRES_* environment variables for consistency with compose.yaml
+spring.datasource.url=jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:bibliotecadb}
+spring.datasource.username=${POSTGRES_USER:postgres}
+spring.datasource.password=${POSTGRES_PASSWORD:}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Dev JPA settings
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# NOTES:
+# - This file is a safe template and contains NO real secrets. Fill real values in a local .env or your shell.
+# - Do NOT commit src/main/resources/application.properties with secrets. Use application-prod.properties to reference env vars for production.
