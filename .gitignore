@@ -79,3 +79,4 @@ keystore.p12
 .datagrip/
 src/main/resources/application.properties
 *.p12
+database.sql
