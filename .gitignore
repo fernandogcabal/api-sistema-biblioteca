@@ -58,7 +58,6 @@ build/
 .env
 .env.local
 .env.*.local
-.env.example
 *.properties.local
 *.yml.local
 .sts4-cache/
@@ -79,4 +78,4 @@ keystore.p12
 .datagrip/
 src/main/resources/application.properties
 *.p12
-database.sql
+database.sql.example

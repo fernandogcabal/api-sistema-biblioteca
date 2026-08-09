@@ -2,17 +2,14 @@
 # IMPORTANT INSTRUCTIONS FOR DEVELOPERS:
 # 1) Create a local top-level .env file on each machine (project root). DO NOT commit it.
 #    Example entries (in project/.env):
-#      DB_HOST=localhost
-#      DB_PORT=5432
-#      DB_NAME=bibliotecadb
-#      DB_USERNAME=your_db_user
-#      DB_PASSWORD=your_db_password
+#      POSTGRES_HOST=localhost
+#      POSTGRES_PORT=5432
+#      POSTGRES_DB=bibliotecadb
+#      POSTGRES_USER=postgres
+#      POSTGRES_PASSWORD=your_secure_password_here
 #      JWT_SECRET=replace_with_32+_char_secret
 #      SSL_KEYSTORE_PATH=/path/to/keystore.p12
 #      SSL_KEYSTORE_PASSWORD=keystore_password
-#      POSTGRES_USER=postgres
-#      POSTGRES_PASSWORD=postgres_password
-#      POSTGRES_DB=bibliotecadb
 # 2) Add ".env" to .gitignore (repo already ignores it). Never commit real values.
 # 3) Load env vars before running (use direnv, export in shell, or docker-compose env_file).
 # 4) To run locally you may copy this file to src/main/resources/application.properties (kept ignored):
@@ -23,9 +20,10 @@
 spring.application.name=api-sistema-biblioteca
 
 # Database configuration - read values from environment
-spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bibliotecadb}
-spring.datasource.username=${DB_USERNAME:postgres}
-spring.datasource.password=${DB_PASSWORD:}
+# Uses POSTGRES_* environment variables for consistency with compose.yaml
+spring.datasource.url=jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:bibliotecadb}
+spring.datasource.username=${POSTGRES_USER:postgres}
+spring.datasource.password=${POSTGRES_PASSWORD:}
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 # Dev JPA settings
