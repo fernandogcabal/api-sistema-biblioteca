@@ -1,8 +1,28 @@
-# Example development config - keep secrets out of the repo
-# Copy this to src/main/resources/application.properties for local dev
+# Example development config - DO NOT commit secrets
+# IMPORTANT INSTRUCTIONS FOR DEVELOPERS:
+# 1) Create a local top-level .env file on each machine (project root). DO NOT commit it.
+#    Example entries (in project/.env):
+#      DB_HOST=localhost
+#      DB_PORT=5432
+#      DB_NAME=bibliotecadb
+#      DB_USERNAME=your_db_user
+#      DB_PASSWORD=your_db_password
+#      JWT_SECRET=replace_with_32+_char_secret
+#      SSL_KEYSTORE_PATH=/path/to/keystore.p12
+#      SSL_KEYSTORE_PASSWORD=keystore_password
+#      POSTGRES_USER=postgres
+#      POSTGRES_PASSWORD=postgres_password
+#      POSTGRES_DB=bibliotecadb
+# 2) Add ".env" to .gitignore (repo already ignores it). Never commit real values.
+# 3) Load env vars before running (use direnv, export in shell, or docker-compose env_file).
+# 4) To run locally you may copy this file to src/main/resources/application.properties (kept ignored):
+#      cp src/main/resources/application.properties.example src/main/resources/application.properties
+#    Then run the app; it will read values from environment variables shown below.
+# 5) For production, use a secrets manager or CI/CD secret variables. Rotate leaked credentials immediately.
 
 spring.application.name=api-sistema-biblioteca
 
+# Database configuration - read values from environment
 spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bibliotecadb}
 spring.datasource.username=${DB_USERNAME:postgres}
 spring.datasource.password=${DB_PASSWORD:}
@@ -13,5 +33,5 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 
 # NOTES:
-# - Set DB_USERNAME/DB_PASSWORD in your environment or in a local .env (ignored).
-# - For production, keep using environment variables or a secret manager.
+# - This file is a safe template and contains NO real secrets. Fill real values in a local .env or your shell.
+# - Do NOT commit src/main/resources/application.properties with secrets. Use application-prod.properties to reference env vars for production.
