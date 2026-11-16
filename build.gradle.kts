@@ -17,12 +17,14 @@ repositories {
 	mavenCentral()
 }
 
-dependencies {
-	constraints {
-		implementation("com.fasterxml.jackson.core:jackson-databind:2.21.8") {
-			because("Fixes CVE-2026-110879")
-		}
+dependencyManagement {
+	dependencies {
+		dependency("com.fasterxml.jackson.core:jackson-databind:2.21.8")
+		dependency("tools.jackson.core:jackson-databind:3.1.8")
 	}
+}
+
+dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	compileOnly("org.projectlombok:lombok")
