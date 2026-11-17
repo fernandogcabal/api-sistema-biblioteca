@@ -5,6 +5,7 @@ import com.biblioteca.api_sistema_biblioteca.dto.LoginRequest;
 import com.biblioteca.api_sistema_biblioteca.dto.UserRegisterRequest;
 import com.biblioteca.api_sistema_biblioteca.model.User;
 import com.biblioteca.api_sistema_biblioteca.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<User> getCurrentUser(Principal principal) {
         String username = principal.getName();
         User user = userService.findByUsername(username);
@@ -38,6 +40,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<User> updateProfile(Principal principal, @RequestBody UserRegisterRequest request) {
         String username = principal.getName();
         User updatedUser = userService.updateUser(username, request);

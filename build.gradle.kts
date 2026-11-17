@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "4.1.0"
+	id("org.springframework.boot") version "4.1.2"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -17,7 +17,15 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	dependencies {
+		dependency("com.fasterxml.jackson.core:jackson-databind:2.21.8")
+		dependency("tools.jackson.core:jackson-databind:3.1.8")
+	}
+}
+
 dependencies {
+
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -41,9 +49,13 @@ dependencies {
 
     // Librería estándar de la industria para generar y leer Tokens JWT
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 }
+
+
 
 tasks.withType<Test> {
 	useJUnitPlatform()

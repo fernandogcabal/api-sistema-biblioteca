@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +20,15 @@ public class JwtService {
     private final SecretKey secretKey;
     private final long expirationTime;
 
-    public JwtService(@Value("${jwt.secret:}") String secret, 
+    public JwtService(@Value("${jwt.secret}") String secret,
                       @Value("${jwt.expiration:86400000}") long expirationTime) {
-        if (secret == null || secret.isEmpty()) {
-            secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        } else if (secret.length() >= 32) {
-            secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-        } else {
-            throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
+        if (secret == null || secret.trim().length() < 32) {
+            throw new IllegalArgumentException("ERROR: jwt.secret no se cargó o tiene menos de 32 caracteres.");
         }
+        this.secretKey = Keys.hmacShaKeyFor(secret.trim().getBytes(StandardCharsets.UTF_8));
         this.expirationTime = expirationTime;
     }
+
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();

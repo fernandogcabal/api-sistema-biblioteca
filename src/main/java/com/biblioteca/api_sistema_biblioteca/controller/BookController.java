@@ -3,6 +3,7 @@ package com.biblioteca.api_sistema_biblioteca.controller;
 import com.biblioteca.api_sistema_biblioteca.dto.CreateBookRequest;
 import com.biblioteca.api_sistema_biblioteca.model.Book;
 import com.biblioteca.api_sistema_biblioteca.service.BookService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/books")
+@SecurityRequirement(name = "bearerAuth")
 public class BookController {
 
     private final BookService bookService;

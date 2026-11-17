@@ -34,7 +34,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 2. Permitimos explícitamente todas las peticiones OPTIONS (Pre-flight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/users", "/api/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/users", "/api/users/login").permitAll()
+
+                        //LA LISTA BLANCA DE SWAGGER:
+                        .requestMatchers(
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+
                         .anyRequest().authenticated()
                 )
 
